@@ -4,7 +4,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import styles from './Dashboard.module.css';
 import { PortfolioContext } from '../../PortfolioContext';
-
 const Dashboard = () => {
   
   const { userData, setUserData } = useContext(PortfolioContext);
@@ -104,7 +103,12 @@ const Dashboard = () => {
       toast.error('Please select a file');
       return;
     }
+const fileSizeInMB = selectedFile.size / (1024 * 1024);
 
+if (fileSizeInMB > 2) {
+  toast.error('File size should be less than 2MB');
+  return;
+}
     setIsLoading(prev => ({ ...prev, profilePic: true }));
     try {
       const formData = new FormData();
@@ -493,7 +497,15 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
-
+      {/* Message Section */}
+      <div className={styles.section}>  
+        <h2>Message</h2>
+        <div className={styles.sectionButtons}>
+          <button onClick={() => navigate('/dashboard/messages')} className={styles.sectionButton}>
+            View Messages
+          </button>
+        </div>
+      </div>
       {/* Portfolio Management */}
       <div className={styles.section}>
         <h2>Portfolio Management</h2>
