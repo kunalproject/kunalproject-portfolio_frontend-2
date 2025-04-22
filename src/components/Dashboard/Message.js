@@ -5,31 +5,34 @@ import styles from './Message.module.css';
 
 const Message = () => {
   const { userData } = useContext(PortfolioContext);
-  console.log("userData", userData);
   // Format date function
-  const formatDate = (dateString) => {
-    if (!dateString) return 'No date';
+const formatDate = (dateString) => {
+  if (!dateString) return 'No date';
+  
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid date';
     
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+    // Convert to IST (UTC+5:30) by subtracting 5 hours and 30 minutes
+    const istOffset = 5.5 * 60 * 60 * 1000; // 5.5 hours in milliseconds
+    const istDate = new Date(date.getTime() - istOffset);
     
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return 'Invalid date';
-      
-      const day = date.getDate();
-      const month = months[date.getMonth()];
-      const year = date.getFullYear();
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      
-      return `${day}-${month}-${year} ${hours}:${minutes}`;
-    } catch (e) {
-      return 'Invalid date';
-    }
-  };
+    const day = istDate.getDate();
+    const month = months[istDate.getMonth()];
+    const year = istDate.getFullYear();
+    const hours = istDate.getHours().toString().padStart(2, '0');
+    const minutes = istDate.getMinutes().toString().padStart(2, '0');
+    
+    return `${day}-${month}-${year} ${hours}:${minutes}`;
+  } catch (e) {
+    return 'Invalid date';
+  }
+};
 
   // Safely get messages array
   const messages = userData?.messages ? [...userData.messages].reverse() : [];
